@@ -86,7 +86,7 @@ async function analyze() {
 
   try {
     const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyBeSxAYlG_kbOPDu19a7bYDvPbupWZIGCo`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=AIzaSyBeSxAYlG_kbOPDu19a7bYDvPbupWZIGCo`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
