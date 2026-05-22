@@ -300,14 +300,23 @@ function reset() {
 
 function saveToCloset() {
   if (!currentResult || saved) return;
-  closet.unshift(currentResult);
-  localStorage.setItem("wardrobe_closet", JSON.stringify(closet));
+  
+  // 사진을 base64로 변환해서 저장
+  if (imageFile) {
+    toBase64(imageFile).then(function(b64) {
+      const mediaType = imageFile.type || "image/jpeg";
+      currentResult.imageUrl = "data:" + mediaType + ";base64," + b64;
+      closet.unshift(currentResult);
+      localStorage.setItem("wardrobe_closet", JSON.stringify(closet));
+    });
+  } else {
+    closet.unshift(currentResult);
+    localStorage.setItem("wardrobe_closet", JSON.stringify(closet));
+  }
+  
   saved = true;
   const btn = document.getElementById("saveBtn");
-  if (btn) {
-    btn.textContent = "저장됐어요 ✓";
-    btn.classList.add("saved");
-  }
+  if (btn) { btn.textContent = "저장됐어요 ✓"; btn.classList.add("saved"); }
 }
 
 function closeCloset() {
