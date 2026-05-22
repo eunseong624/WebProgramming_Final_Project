@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>버리지마 — 옷장살리기</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <div class="pf" style="font-size: 1rem">옷장살리기</div>
+      <button class="btn-sm" id="closetBtn">내 옷장</button>
+    </header>
+
+    <section class="hero">
+      <h1 class="pf">버리지<br /><em>마라.</em></h1>
+      <div class="hero-foot">
+        <p class="hero-desc">
+          안 입는 옷에도 가능성이 있다.<br />사진을 올리거나 정보를 입력하면<br />AI가
+          코디와 업사이클링을 알려드릴게요.
+        </p>
+        <div class="hero-tag">재활용 × 패션<br />AI Powered</div>
+      </div>
+    </section>
+
+    <section class="form-section" id="formSection">
+      <div class="form-row">
+        <div>
+          <div class="row-num">00</div>
+          <div class="row-name pf">사진 <em>선택</em></div>
+        </div>
+        <div id="uploadArea">
+          <div class="upload-area" id="uploadBox">
+            <div class="upload-icon">↑</div>
+            <div class="upload-label">사진 올리기</div>
+            <div class="upload-sub">옷을 직접 보고 분석해드릴게요</div>
+          </div>
+          <input
+            type="file"
+            id="fileInput"
+            accept="image/*"
+            style="display: none"
+          />
+        </div>
+      </div>
+      <div class="form-row">
+        <div>
+          <div class="row-num">01</div>
+          <div class="row-name pf">종류</div>
+        </div>
+        <div class="chips">
+          <button class="chip" data-group="type">상의</button>
+          <button class="chip" data-group="type">하의</button>
+          <button class="chip" data-group="type">아우터</button>
+          <button class="chip" data-group="type">원피스/투피스</button>
+          <button class="chip" data-group="type">가방/잡화</button>
+          <button class="chip" data-group="type">기타</button>
+        </div>
+      </div>
+      <div class="form-row" id="colorRow">
+        <div>
+          <div class="row-num">02</div>
+          <div class="row-name pf">색상</div>
+        </div>
+        <div>
+          <div class="swatch-row">
+            <div
+              class="swatch"
+              style="background: #f5f5f0; border: 1px solid #ccc"
+              data-color="화이트"
+            ></div>
+            <div
+              class="swatch"
+              style="background: #1c1c1a"
+              data-color="블랙"
+            ></div>
+            <div
+              class="swatch"
+              style="background: #8b7b6b"
+              data-color="베이지"
+            ></div>
+            <div
+              class="swatch"
+              style="background: #4a6fa5"
+              data-color="블루"
+            ></div>
+            <div
+              class="swatch"
+              style="background: #6b8e6b"
+              data-color="그린"
+            ></div>
+            <div
+              class="swatch"
+              style="background: #b85c38"
+              data-color="레드/오렌지"
+            ></div>
+            <div
+              class="swatch"
+              style="background: #c9a0c9"
+              data-color="퍼플/핑크"
+            ></div>
+            <div
+              class="swatch"
+              style="background: #a8a8a0"
+              data-color="그레이"
+            ></div>
+          </div>
+          <input
+            class="color-input"
+            type="text"
+            id="colorText"
+            placeholder="직접 입력"
+          />
+        </div>
+      </div>
+      <div class="form-row">
+        <div>
+          <div class="row-num">03</div>
+          <div class="row-name pf">소재</div>
+        </div>
+        <div class="chips">
+          <button class="chip" data-group="material">면/코튼</button>
+          <button class="chip" data-group="material">폴리에스터</button>
+          <button class="chip" data-group="material">데님</button>
+          <button class="chip" data-group="material">니트/울</button>
+          <button class="chip" data-group="material">린넨</button>
+          <button class="chip" data-group="material">가죽/합성가죽</button>
+          <button class="chip" data-group="material">잘 모르겠어요</button>
+        </div>
+      </div>
+      <div class="form-row">
+        <div>
+          <div class="row-num">04</div>
+          <div class="row-name pf">이유 <em>*</em></div>
+        </div>
+        <div class="chips">
+          <button class="chip" data-group="reason">질렸어요</button>
+          <button class="chip" data-group="reason">몸에 안 맞아요</button>
+          <button class="chip" data-group="reason">유행이 지났어요</button>
+          <button class="chip" data-group="reason">색이 안 맞아요</button>
+          <button class="chip" data-group="reason">상태가 좋지 않아요</button>
+          <button class="chip" data-group="reason">그냥요</button>
+        </div>
+      </div>
+      <div class="form-row last">
+        <div>
+          <div class="row-num">05</div>
+          <div class="row-name pf">설명</div>
+        </div>
+        <textarea
+          class="form-textarea"
+          id="description"
+          placeholder="추가로 알려주실 게 있나요?"
+        ></textarea>
+      </div>
+      <div class="submit-area">
+        <button class="btn-analyze" id="analyzeBtn">분석 시작</button>
+        <span class="submit-hint">04 이유는 필수예요</span>
+      </div>
+    </section>
+
+    <div class="loading-state" id="loadingState">
+      <div class="loading-bar-wrap"><div class="loading-bar"></div></div>
+      <p class="loading-text" id="loadingText">분석하는 중</p>
+    </div>
+
+    <div class="error-state" id="errorState">
+      <p class="error-msg" id="errorMsg"></p>
+      <button class="btn-analyze" id="retryBtn">다시 시도</button>
+    </div>
+
+    <section class="result-section" id="resultSection">
+      <div class="result-head">
+        <div id="resultImg"></div>
+        <h2 class="pf" id="resultTitle">분석<br /><em>완료.</em></h2>
+        <div class="result-tags" id="resultTags"></div>
+      </div>
+      <div class="result-grid">
+        <div class="result-card" id="coordCard">
+          <div class="card-label">01 코디 추천</div>
+          <div id="coordContent"></div>
+        </div>
+        <div class="result-card" id="upcycleCard">
+          <div class="card-label">02 업사이클링</div>
+          <div id="upcycleContent"></div>
+        </div>
+      </div>
+      <div class="result-actions" id="resultActions">
+        <button class="btn-save" id="saveBtn">내 옷장에 저장</button>
+        <button class="btn-reset" id="resetBtn">다른 옷 분석하기</button>
+      </div>
+    </section>
+
+    <div class="overlay" id="overlay">
+      <div class="modal">
+        <div class="modal-head">
+          <div class="pf" style="font-size: 1.1rem">내 옷장</div>
+          <button class="modal-close" id="modalClose">✕ 닫기</button>
+        </div>
+        <div id="closetList"></div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
