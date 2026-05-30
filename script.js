@@ -29,7 +29,7 @@ function handleFile(e) {
   document.getElementById("uploadArea").innerHTML =
     '<div class="img-preview"><img src="' +
     url +
-    '" alt="업로드"/><button class="img-remove" id="removeImg">X</button></div>';
+    '" alt="업로드"/><button class="img-remove" id="removeImg">✕</button></div>';
   document.getElementById("removeImg").addEventListener("click", function () {
     imageFile = null;
     resetUploadArea();
@@ -86,8 +86,8 @@ function toBase64(file) {
   return new Promise(function (res, rej) {
     const r = new FileReader();
     r.onload = function () {
-      res(r.result.split(",")[1]);
-    };
+      res(r.result);
+    }; // data URL 전체 반환
     r.onerror = function () {
       rej(new Error("파일 읽기 실패"));
     };
@@ -148,6 +148,53 @@ function showPhase(phase) {
     phase === "result" ? "block" : "none";
 }
 
+function renderResult(parsed, imgUrl) {
+  const tags = [
+    sel.type,
+    document.getElementById("colorText").value || sel.color,
+    sel.material,
+    sel.reason,
+  ].filter(Boolean);
+  document.getElementById("resultTags").innerHTML = tags
+    .map(function (t) {
+      return '<span class="result-tag">' + t + "</span>";
+    })
+    .join("");
+  document.getElementById("resultImg").innerHTML = imgUrl
+    ? '<img src="' + imgUrl + '"/>'
+    : "";
+  document.getElementById("coordContent").innerHTML = parsed.coords
+    .map(function (c, i) {
+      return (
+        '<div class="coord-item"><span class="coord-num">0' +
+        (i + 1) +
+        '</span><span class="coord-text">' +
+        c +
+        "</span></div>"
+      );
+    })
+    .join("");
+  document.getElementById("upcycleContent").innerHTML = parsed.upcycles
+    .map(function (u) {
+      return (
+        '<div class="upcycle-item">' +
+        (u.diff ? '<span class="badge">난이도 ' + u.diff + "</span>" : "") +
+        '<div class="upcycle-title">' +
+        u.title +
+        '</div><div class="upcycle-desc">' +
+        u.desc +
+        "</div></div>"
+      );
+    })
+    .join("");
+  document.getElementById("resultTitle").style.display = "";
+  document.getElementById("resultActions").innerHTML =
+    '<button class="btn-save" id="saveBtn">내 옷장에 저장</button>' +
+    '<button class="btn-reset" id="resetBtn">다른 옷 분석하기</button>';
+  document.getElementById("saveBtn").addEventListener("click", saveToCloset);
+  document.getElementById("resetBtn").addEventListener("click", reset);
+}
+
 async function analyze() {
   if (!sel.reason) {
     alert("안 입는 이유를 선택해주세요!");
@@ -187,8 +234,8 @@ async function analyze() {
     (desc || "없음") +
     "\n\n" +
     "아래 형식으로 정확히 답변하세요. 각 항목은 1-2문장으로 간결하게 써주세요.\n\n" +
-    "[코디추천]\n1. (스타일명): 한두 문장\n2. (스타일명): 한두 문장\n3. (스타일명): 한두 문장\n\n" +
-    "[업사이클링]\n1. (아이템명)\n난이도: 쉬움/보통/어려움\n한두 문장\n\n2. (아이템명)\n난이도: 쉬움/보통/어려움\n한두 문장";
+    "[코디추천]\n1. (스타일명): 한두 문장으로 코디 방법\n2. (스타일명): 한두 문장으로 코디 방법\n3. (스타일명): 한두 문장으로 코디 방법\n\n" +
+    "[업사이클링]\n1. (아이템명)\n난이도: 쉬움/보통/어려움\n한두 문장으로 만드는 방법\n\n2. (아이템명)\n난이도: 쉬움/보통/어려움\n한두 문장으로 만드는 방법";
 
   try {
     const res = await fetch(
@@ -213,6 +260,12 @@ async function analyze() {
       );
     const parsed = parseResult(data.choices[0].message.content);
 
+    // 사진을 base64 data URL로 변환해서 저장 (새로고침해도 유지)
+    let imgDataUrl = null;
+    if (imageFile) {
+      imgDataUrl = await toBase64(imageFile);
+    }
+
     currentResult = Object.assign({}, parsed, {
       type: sel.type,
       color: colorVal,
@@ -220,52 +273,12 @@ async function analyze() {
       reason: sel.reason,
       date: new Date().toLocaleDateString("ko-KR"),
       id: Date.now(),
-      imageUrl: imageFile ? URL.createObjectURL(imageFile) : null,
+      imageUrl: imgDataUrl,
     });
     saved = false;
     clearInterval(timer);
 
-    const tags = [sel.type, colorVal, sel.material, sel.reason].filter(Boolean);
-    document.getElementById("resultTags").innerHTML = tags
-      .map(function (t) {
-        return '<span class="result-tag">' + t + "</span>";
-      })
-      .join("");
-    document.getElementById("resultImg").innerHTML = currentResult.imageUrl
-      ? '<img src="' + currentResult.imageUrl + '"/>'
-      : "";
-    document.getElementById("coordContent").innerHTML = parsed.coords
-      .map(function (c, i) {
-        return (
-          '<div class="coord-item"><span class="coord-num">0' +
-          (i + 1) +
-          '</span><span class="coord-text">' +
-          c +
-          "</span></div>"
-        );
-      })
-      .join("");
-    document.getElementById("upcycleContent").innerHTML = parsed.upcycles
-      .map(function (u) {
-        return (
-          '<div class="upcycle-item">' +
-          (u.diff ? '<span class="badge">난이도 ' + u.diff + "</span>" : "") +
-          '<div class="upcycle-title">' +
-          u.title +
-          '</div><div class="upcycle-desc">' +
-          u.desc +
-          "</div></div>"
-        );
-      })
-      .join("");
-
-    document.getElementById("resultTitle").style.display = "";
-    document.getElementById("resultActions").innerHTML =
-      '<button class="btn-save" id="saveBtn">내 옷장에 저장</button>' +
-      '<button class="btn-reset" id="resetBtn">다른 옷 분석하기</button>';
-    document.getElementById("saveBtn").addEventListener("click", saveToCloset);
-    document.getElementById("resetBtn").addEventListener("click", reset);
-
+    renderResult(parsed, imgDataUrl);
     showPhase("result");
     setTimeout(function () {
       document.getElementById("coordCard").classList.add("visible");
@@ -300,23 +313,14 @@ function reset() {
 
 function saveToCloset() {
   if (!currentResult || saved) return;
-  
-  // 사진을 base64로 변환해서 저장
-  if (imageFile) {
-    toBase64(imageFile).then(function(b64) {
-      const mediaType = imageFile.type || "image/jpeg";
-      currentResult.imageUrl = "data:" + mediaType + ";base64," + b64;
-      closet.unshift(currentResult);
-      localStorage.setItem("wardrobe_closet", JSON.stringify(closet));
-    });
-  } else {
-    closet.unshift(currentResult);
-    localStorage.setItem("wardrobe_closet", JSON.stringify(closet));
-  }
-  
+  closet.unshift(currentResult);
+  localStorage.setItem("wardrobe_closet", JSON.stringify(closet));
   saved = true;
   const btn = document.getElementById("saveBtn");
-  if (btn) { btn.textContent = "저장됐어요 ✓"; btn.classList.add("saved"); }
+  if (btn) {
+    btn.textContent = "저장됐어요 ✓";
+    btn.classList.add("saved");
+  }
 }
 
 function closeCloset() {
@@ -360,7 +364,7 @@ function openCloset() {
           "</span>" +
           '<button class="delete-btn" data-id="' +
           item.id +
-          '" style="margin-left:8px;font-size:.7rem;color:var(--g3);background:none;border:none;cursor:pointer;">X</button>' +
+          '" style="margin-left:8px;font-size:.7rem;color:var(--g3);background:none;border:none;cursor:pointer;">✕</button>' +
           "</div></div>"
         );
       })
@@ -443,6 +447,8 @@ document.getElementById("analyzeBtn").addEventListener("click", analyze);
 document.getElementById("retryBtn").addEventListener("click", function () {
   showPhase("form");
 });
+document.getElementById("resetBtn").addEventListener("click", reset);
+document.getElementById("saveBtn").addEventListener("click", saveToCloset);
 document.getElementById("closetBtn").addEventListener("click", openCloset);
 document.getElementById("modalClose").addEventListener("click", closeCloset);
 document.getElementById("overlay").addEventListener("click", function (e) {
