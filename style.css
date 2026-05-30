@@ -47,6 +47,7 @@ header {
 .btn-sm:hover {
   border-color: var(--b);
 }
+
 .hero {
   padding: 6rem 2.5rem 4.5rem;
   border-bottom: 1px solid var(--g2);
@@ -84,6 +85,7 @@ header {
   text-align: right;
   line-height: 2;
 }
+
 .form-section {
   max-width: 860px;
   margin: 0 auto;
@@ -114,6 +116,7 @@ header {
   color: var(--g3);
   font-size: 0.85em;
 }
+
 .upload-area {
   border: 1.5px dashed var(--g2);
   padding: 2rem;
@@ -163,6 +166,7 @@ header {
   align-items: center;
   justify-content: center;
 }
+
 .chips {
   display: flex;
   flex-wrap: wrap;
@@ -189,6 +193,7 @@ header {
   color: var(--w);
   font-weight: 400;
 }
+
 .swatch-row {
   display: flex;
   gap: 8px;
@@ -222,6 +227,7 @@ header {
 .color-input:focus {
   border-color: var(--b);
 }
+
 .form-textarea {
   width: 100%;
   padding: 12px 0;
@@ -240,6 +246,7 @@ header {
 .form-textarea::placeholder {
   color: var(--g3);
 }
+
 .submit-area {
   margin-top: 3.5rem;
   display: flex;
@@ -265,6 +272,7 @@ header {
   color: var(--g3);
   font-weight: 300;
 }
+
 .loading-state {
   display: none;
   text-align: center;
@@ -307,6 +315,7 @@ header {
   color: var(--g3);
   transition: opacity 0.3s;
 }
+
 .error-state {
   display: none;
   text-align: center;
@@ -318,6 +327,7 @@ header {
   margin-bottom: 1.5rem;
   line-height: 1.7;
 }
+
 .result-section {
   display: none;
   max-width: 860px;
@@ -362,6 +372,7 @@ header {
   padding: 3px 9px;
   font-weight: 300;
 }
+
 .result-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -405,6 +416,7 @@ header {
   height: 1px;
   background: var(--g2);
 }
+
 .coord-item {
   padding: 0.9rem 0;
   border-bottom: 1px solid var(--g2);
@@ -428,6 +440,7 @@ header {
   line-height: 1.7;
   font-weight: 300;
 }
+
 .upcycle-item {
   padding: 1rem;
   background: #f5f5f3;
@@ -456,6 +469,7 @@ header {
   line-height: 1.7;
   font-weight: 300;
 }
+
 .result-actions {
   display: flex;
   gap: 1rem;
@@ -495,6 +509,7 @@ header {
   border-color: var(--g4);
   color: var(--b);
 }
+
 .overlay {
   position: fixed;
   inset: 0;
